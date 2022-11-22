@@ -1,9 +1,7 @@
 /*
  * Written by Mason Watts, Dec 1 2021
- * Basic code for a dynamic name tag. 
+ * Basic code for a rotating message display for a loved one/spouse. 
  * Uses a Adafruit Feather HUZZAH w/ ESP8266 (Product #2821) and Adafruit 2.9" Grayscale eInk Display FeatherWing.
- * Iterates over images (.bmp) in the root directory of the loaded SD card, waiting a short period before displaying the next image.
- * This display supports a maximum image resolution of 296 x 128.
  */
 
 #include <ESP8266WiFi.h>
@@ -30,8 +28,8 @@ using namespace ace_time::clock;
 
 SdFat sd;
 
-const char* ssid     = "Fios-w3XKz";
-const char* password = "shout63fuel67bar";
+const char* ssid     = "SSID";
+const char* password = "PASSWORD";
 
 static BasicZoneProcessor timeZoneProcessor;
 static NtpClock ntpClock, ntpClock2;
@@ -63,6 +61,124 @@ void printScreen(ZonedDateTime localTime)
   else
   {
     snprintf(text, sizeof(text), "I LOVE YOU! Wait for a note.");
+    long seed = random();
+    String myString = "";
+    // "I"
+    if(seed % 2 == 0)
+    {
+      myString += "I ";
+
+      seed = random();
+      // "love"
+      if(seed % 2 == 0)
+      {
+        myString += "love ";
+
+        int optionSize = 11;
+        String options[optionSize] = 
+        {
+          "you",
+          "your personality",
+          "your eyes",
+          "our cuddles",
+          "movie nights",
+          "our dates",
+          "hiking together",
+          "posing for photos",
+          "travelling together",
+          "our family",
+          "our home"
+        };
+        
+        seed = random(0, optionSize);
+        myString += options[seed];
+      }
+      // "appreciate"
+      else
+      {
+        myString += "appreciate ";
+
+        int optionSize = 7;
+        String options[optionSize] = 
+        {
+          "you",
+          "your caring",
+          "all you do",
+          "your kindness",
+          "your healthy help",
+          "your strength",
+          "your love"
+        };
+        
+        seed = random(0, optionSize);
+        myString += options[seed];
+      }
+    }
+    // "You"
+    else
+    {
+      myString += "You ";
+
+      seed = random();
+      // "make me"
+      if(seed % 2 == 0)
+      {
+        myString += "make me ";
+
+        int optionSize = 4;
+        String options[optionSize] = 
+        {
+          "happy",
+          "fulfilled",
+          "proud",
+          "feel loved"
+        };
+        
+        seed = random(0, optionSize);
+        myString += options[seed];
+      }
+      // "are"
+      else
+      {
+        myString += "are ";
+
+        int optionSize = 12;
+        String options[optionSize] = 
+        {
+          "loved",
+          "beautiful",
+          "amazing",
+          "strong",
+          "kind",
+          "my person",
+          "the one for me",
+          "sexy",
+          "intelligent",
+          "brave",
+          "loyal",
+          "valued"
+        };
+        
+        seed = random(0, optionSize);
+        myString += options[seed];
+      }
+    }
+
+    seed = random();
+    if(seed % 3 == 0)
+    {
+      myString += ".";
+    }
+    else if(seed % 3 == 1)
+    {
+       myString += "!";
+    }
+    else
+    {
+      myString += " <3";
+    }
+
+    myString.toCharArray(text, 80);
   }
   
   Serial.println(text);
@@ -77,7 +193,7 @@ void printScreen(ZonedDateTime localTime)
   display.print("/");
   display.print(localTime.year());
 
-  display.setCursor(20, 40);
+  display.setCursor(10, 40);
   display.print(text);
   
   display.display();
@@ -100,6 +216,8 @@ void setup(void)
   display.begin(THINKINK_GRAYSCALE4);
 
   sd.begin(SD_CS, SD_SCK_MHZ(10));
+
+  randomSeed(analogRead(0));
 }
 
 void loop() 
