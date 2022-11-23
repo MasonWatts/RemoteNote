@@ -1,6 +1,8 @@
 # Overview
 RemoteNote is a simple system for displaying text on an E-Ink screen for loved ones. Use a Adafruit Feather HUZZAH with ESP8266, Adafruit 2.9" Grayscale eInk / ePaper Display FeatherWing, and any microSD card of your choosing. The ESP8266 is used to poll an NTP time server, which is then used to check the current date against notes saved on the SD card. If one matching the current date is there, it is displayed. If not, one is generated from a tree of sappy lines I came up with.
 
+![Front View](/Resources/Result1.png)
+
 # Setup
 Parts List:
 1. Adafruit Feather HUZZAH with ESP8266 (P/N 2821), w/ headers
